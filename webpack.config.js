@@ -27,11 +27,14 @@ module.exports = {
       // Rules are chained bottom to top. Babel rule must probably be one of
       // the last of the chain, so it must come first in the array.
       {
-        include: [
-          { test: /\.(?:svelte|m?js)/ },
-          // Svelte internals, under node_modules MUST be included.
-          path.dirname(sveltePath),
-        ],
+        test: /\.(?:svelte|m?js)$/,
+        // Svelte internals, under node_modules MUST be included.
+        //
+        // Babel 7 ignores node_modules automatically, but not if they're
+        // explicitely included.
+        // see: https://github.com/babel/babel-loader/issues/171#issuecomment-486380160
+        //
+        include: [path.resolve(__dirname, 'src'), path.dirname(sveltePath)],
         use: {
           loader: 'babel-loader',
           options: {
