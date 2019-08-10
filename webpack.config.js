@@ -24,8 +24,14 @@ module.exports = {
   },
   module: {
     rules: [
+      // Rules are chained bottom to top. Babel rule must probably be one of
+      // the last of the chain, so it must come first in the array.
       {
-        include: [{ test: /\.(?:svelte|m?js)/ }, path.dirname(sveltePath)],
+        include: [
+          { test: /\.(?:svelte|m?js)/ },
+          // Svelte internals, under node_modules MUST be included.
+          path.dirname(sveltePath),
+        ],
         use: {
           loader: 'babel-loader',
           options: {
