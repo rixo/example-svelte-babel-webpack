@@ -4,13 +4,15 @@ const path = require('path')
 const mode = process.env.NODE_ENV || 'development'
 const prod = mode === 'production'
 
+const sveltePath = path.resolve('node_modules', 'svelte')
+
 module.exports = {
   entry: {
     bundle: ['./src/main.js'],
   },
   resolve: {
     alias: {
-      svelte: path.resolve('node_modules', 'svelte'),
+      svelte: sveltePath,
     },
     extensions: ['.mjs', '.js', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main'],
@@ -22,6 +24,22 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        include: [{ test: /\.(?:svelte|m?js)/ }, path.dirname(sveltePath)],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: 'ie >= 9',
+                },
+              ],
+            ],
+          },
+        },
+      },
       {
         test: /\.svelte$/,
         use: {
